@@ -1,0 +1,117 @@
+namespace = zz_br
+
+# ============ 补岗迁移 outcomes ============
+# 0: no open jobs
+country_event = {
+	id = zz_br.0
+	title = zz_br_fill_title
+	desc = zz_br_0_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 1: jobs filled
+country_event = {
+	id = zz_br.1
+	title = zz_br_fill_title
+	desc = zz_br_1_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 2: no more moveable civilians anywhere
+country_event = {
+	id = zz_br.2
+	title = zz_br_fill_title
+	desc = zz_br_2_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 3: not enough resources
+country_event = {
+	id = zz_br.3
+	title = zz_br_fill_title
+	desc = zz_br_3_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 4: stopped for another reason
+country_event = {
+	id = zz_br.4
+	title = zz_br_fill_title
+	desc = zz_br_4_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+
+# ============ 超额迁移 outcomes ============
+# 11: done
+country_event = {
+	id = zz_br.11
+	title = zz_br_excess_title
+	desc = zz_br_11_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 12: nothing extra to move
+country_event = {
+	id = zz_br.12
+	title = zz_br_excess_title
+	desc = zz_br_12_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 13: funds ran out
+country_event = {
+	id = zz_br.13
+	title = zz_br_excess_title
+	desc = zz_br_13_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+
+# ============ 完全迁移 outcomes ============
+# 21: done
+country_event = {
+	id = zz_br.21
+	title = zz_br_full_title
+	desc = zz_br_21_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 22: no civilians anywhere to move
+country_event = {
+	id = zz_br.22
+	title = zz_br_full_title
+	desc = zz_br_22_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}
+# 23: funds ran out
+country_event = {
+	id = zz_br.23
+	title = zz_br_full_title
+	desc = zz_br_23_desc
+	is_triggered_only = yes
+	option = {
+		name = zz_br_ok
+	}
+}

@@ -1,0 +1,683 @@
+##########################################################################
+# zz_bulk_resettle - execution effects (v2: 补岗迁移 / 超额迁移 / 完全迁移)
+#
+# Scope convention: every decision effect runs with root = the planet the
+# player clicked on (DESTINATION). "平民" (civilian pops) = pop categories
+# flagged is_civilian_job = yes: civilian + maintenance_drone.
+#
+# Fee model (same for all three, vanilla-like without cost-mult modifiers):
+#   energy = 100 / pop, unity = 10 / pop.
+#   -> 100-pop chunk costs 10.000 energy + 1.000 unity; single pop = 100 + 10.
+#
+# Notes:
+#  - The engine offers no sort/"pick the largest" primitive, so the
+#    "planet with the most civilians" step of 超额迁移 uses tiered weighted
+#    random selection (strong preference for the largest planet, not a
+#    mathematical guarantee). Tiers are marked below.
+##########################################################################
+
+# ============================================================
+# Phase: fill open jobs on root with civilians from any source
+# Uses variable zz_br_need (exported by the caller).
+# ============================================================
+zz_br_fill_jobs_phase_effect = {
+	# ---------- full 100-pop chunks ----------
+	while = {
+		limit = {
+			check_variable = {
+				which = zz_br_need
+				value > 0
+			}
+			root = {
+				owner = {
+					has_resource = {
+						type = energy
+						amount >= 10000
+					}
+					has_resource = {
+						type = unity
+						amount >= 1000
+					}
+					any_owned_colony = {
+						NOT = { is_same_value = root }
+						has_orbital_bombardment = no
+						has_ground_combat = no
+						any_owned_pop_group = {
+							OR = {
+								is_pop_category = civilian
+								is_pop_category = maintenance_drone
+							}
+							pop_group_size >= 100
+						}
+					}
+				}
+			}
+		}
+		count = 3000
+
+		owner = {
+			random_owned_colony = {
+				limit = {
+					NOT = { is_same_value = root }
+					has_orbital_bombardment = no
+					has_ground_combat = no
+					any_owned_pop_group = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+						pop_group_size >= 100
+					}
+				}
+				random_owned_pop_group = {
+					limit = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+						pop_group_size >= 100
+					}
+					resettle_pop_group = {
+						POP_GROUP = this
+						PLANET = root
+						AMOUNT = 100
+					}
+					root = {
+						owner = {
+							add_resource = {
+								energy = -10000
+							}
+							add_resource = {
+								unity = -1000
+							}
+						}
+						subtract_variable = {
+							which = zz_br_need
+							value = 100
+						}
+						set_variable = {
+							which = zz_br_transferred
+							value = 1
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# ---------- remaining <100 pops one by one ----------
+	while = {
+		limit = {
+			check_variable = {
+				which = zz_br_need
+				value > 0
+			}
+			root = {
+				owner = {
+					has_resource = {
+						type = energy
+						amount >= 100
+					}
+					has_resource = {
+						type = unity
+						amount >= 10
+					}
+					any_owned_colony = {
+						NOT = { is_same_value = root }
+						has_orbital_bombardment = no
+						has_ground_combat = no
+						any_owned_pop_group = {
+							OR = {
+								is_pop_category = civilian
+								is_pop_category = maintenance_drone
+							}
+						}
+					}
+				}
+			}
+		}
+		count = 2000
+
+		owner = {
+			random_owned_colony = {
+				limit = {
+					NOT = { is_same_value = root }
+					has_orbital_bombardment = no
+					has_ground_combat = no
+					any_owned_pop_group = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+					}
+				}
+				random_owned_pop_group = {
+					limit = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+					}
+					resettle_pop_group = {
+						POP_GROUP = this
+						PLANET = root
+						AMOUNT = 1
+					}
+					root = {
+						owner = {
+							add_resource = {
+								energy = -100
+							}
+							add_resource = {
+								unity = -10
+							}
+						}
+						subtract_variable = {
+							which = zz_br_need
+							value = 1
+						}
+						set_variable = {
+							which = zz_br_transferred
+							value = 1
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# ============================================================
+# Drain ALL civilian pops from event_target:zz_br_src into root,
+# regardless of jobs/housing on root (overfill allowed).
+# ============================================================
+zz_br_drain_src_planet_effect = {
+	event_target:zz_br_src = {
+		# ---------- 100-pop chunks while a big group exists ----------
+		while = {
+			limit = {
+				any_owned_pop_group = {
+					OR = {
+						is_pop_category = civilian
+						is_pop_category = maintenance_drone
+					}
+					pop_group_size >= 100
+				}
+				root = {
+					owner = {
+						has_resource = {
+							type = energy
+							amount >= 10000
+						}
+						has_resource = {
+							type = unity
+							amount >= 1000
+						}
+					}
+				}
+			}
+			count = 3000
+
+			random_owned_pop_group = {
+				limit = {
+					OR = {
+						is_pop_category = civilian
+						is_pop_category = maintenance_drone
+					}
+					pop_group_size >= 100
+				}
+				resettle_pop_group = {
+					POP_GROUP = this
+					PLANET = root
+					AMOUNT = 100
+				}
+				root = {
+					owner = {
+						add_resource = {
+							energy = -10000
+						}
+						add_resource = {
+							unity = -1000
+						}
+					}
+					set_variable = {
+						which = zz_br_transferred
+						value = 1
+					}
+				}
+			}
+		}
+
+		# ---------- remainder / small groups, one pop at a time ----------
+		while = {
+			limit = {
+				any_owned_pop_group = {
+					OR = {
+						is_pop_category = civilian
+						is_pop_category = maintenance_drone
+					}
+				}
+				root = {
+					owner = {
+						has_resource = {
+							type = energy
+							amount >= 100
+						}
+						has_resource = {
+							type = unity
+							amount >= 10
+						}
+					}
+				}
+			}
+			count = 20000
+
+			random_owned_pop_group = {
+				limit = {
+					OR = {
+						is_pop_category = civilian
+						is_pop_category = maintenance_drone
+					}
+				}
+				resettle_pop_group = {
+					POP_GROUP = this
+					PLANET = root
+					AMOUNT = 1
+				}
+				root = {
+					owner = {
+						add_resource = {
+							energy = -100
+						}
+						add_resource = {
+							unity = -10
+						}
+					}
+					set_variable = {
+						which = zz_br_transferred
+						value = 1
+					}
+				}
+			}
+		}
+	}
+}
+
+# ============================================================
+# Decision effect: 补岗迁移 (fill jobs)
+# ============================================================
+zz_br_do_fill_jobs = {
+	hidden_effect = {
+		export_trigger_value_to_variable = {
+			trigger = free_jobs
+			variable = zz_br_need
+		}
+		set_variable = {
+			which = zz_br_transferred
+			value = 0
+		}
+
+		if = {
+			limit = {
+				check_variable = {
+					which = zz_br_need
+					value > 0
+				}
+			}
+			zz_br_fill_jobs_phase_effect = yes
+		}
+		else = {
+			owner = {
+				country_event = {
+					id = zz_br.0
+				}
+			}
+		}
+
+		# outcome
+		if = {
+			limit = {
+				check_variable = {
+					which = zz_br_need
+					value <= 0
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				root = {
+					owner = {
+						NOR = {
+							has_resource = {
+								type = energy
+								amount >= 100
+							}
+							has_resource = {
+								type = unity
+								amount >= 10
+							}
+						}
+					}
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.3
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				root = {
+					owner = {
+						NOT = {
+							any_owned_colony = {
+								NOT = { is_same_value = root }
+								any_owned_pop_group = {
+									OR = {
+										is_pop_category = civilian
+										is_pop_category = maintenance_drone
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.2
+				}
+			}
+		}
+		else = {
+			owner = {
+				country_event = {
+					id = zz_br.4
+				}
+			}
+		}
+
+		clear_variable = zz_br_need
+		clear_variable = zz_br_transferred
+	}
+}
+
+# ============================================================
+# Decision effect: 超额迁移 = 补岗迁移 + drain all civilians of one
+# source planet (strong weighted preference for the largest one).
+# ============================================================
+zz_br_do_excess = {
+	hidden_effect = {
+		export_trigger_value_to_variable = {
+			trigger = free_jobs
+			variable = zz_br_need
+		}
+		set_variable = {
+			which = zz_br_transferred
+			value = 0
+		}
+
+		# 1) fill jobs exactly like 补岗迁移
+		if = {
+			limit = {
+				check_variable = {
+					which = zz_br_need
+					value > 0
+				}
+			}
+			zz_br_fill_jobs_phase_effect = yes
+		}
+
+		# 2) extra: pick one source planet with strong preference for the
+		#    planet holding the most civilians, then move ALL its civilians.
+		if = {
+			limit = {
+				root = {
+					owner = {
+						any_owned_colony = {
+							NOT = { is_same_value = root }
+							has_orbital_bombardment = no
+							has_ground_combat = no
+							any_owned_pop_group = {
+								OR = {
+									is_pop_category = civilian
+									is_pop_category = maintenance_drone
+								}
+							}
+						}
+					}
+				}
+			}
+			owner = {
+				weighted_random_owned_colony = {
+					limit = {
+						NOT = { is_same_value = root }
+						has_orbital_bombardment = no
+						has_ground_combat = no
+						any_owned_pop_group = {
+							OR = {
+								is_pop_category = civilian
+								is_pop_category = maintenance_drone
+							}
+						}
+					}
+					weights = {
+						base = 1
+						# tiered preference for larger civilian populations
+						modifier = {
+							factor = 2
+							count_owned_pop_amount = {
+								limit = {
+									OR = {
+										is_pop_category = civilian
+										is_pop_category = maintenance_drone
+									}
+								}
+								count > 100
+							}
+						}
+						modifier = {
+							factor = 3
+							count_owned_pop_amount = {
+								limit = {
+									OR = {
+										is_pop_category = civilian
+										is_pop_category = maintenance_drone
+									}
+								}
+								count > 500
+							}
+						}
+						modifier = {
+							factor = 4
+							count_owned_pop_amount = {
+								limit = {
+									OR = {
+										is_pop_category = civilian
+										is_pop_category = maintenance_drone
+									}
+								}
+								count > 2000
+							}
+						}
+						modifier = {
+							factor = 5
+							count_owned_pop_amount = {
+								limit = {
+									OR = {
+										is_pop_category = civilian
+										is_pop_category = maintenance_drone
+									}
+								}
+								count > 8000
+							}
+						}
+					}
+					save_event_target_as = zz_br_src
+				}
+			}
+			zz_br_drain_src_planet_effect = yes
+		}
+
+		# outcome
+		if = {
+			limit = {
+				check_variable = {
+					which = zz_br_transferred
+					value = 0
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.12
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				root = {
+					owner = {
+						NOR = {
+							has_resource = {
+								type = energy
+								amount >= 100
+							}
+							has_resource = {
+								type = unity
+								amount >= 10
+							}
+						}
+					}
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.13
+				}
+			}
+		}
+		else = {
+			owner = {
+				country_event = {
+					id = zz_br.11
+				}
+			}
+		}
+
+		clear_variable = zz_br_need
+		clear_variable = zz_br_transferred
+	}
+}
+
+# ============================================================
+# Decision effect: 完全迁移 = move ALL civilian pops of every other
+# planet into root (no job/housing cap; fees paid until funds run out).
+# ============================================================
+zz_br_do_full = {
+	hidden_effect = {
+		set_variable = {
+			which = zz_br_transferred
+			value = 0
+		}
+
+		owner = {
+			# repeat until no source planet still holds civilians
+			while = {
+				limit = {
+					any_owned_colony = {
+						NOT = { is_same_value = root }
+						has_orbital_bombardment = no
+						has_ground_combat = no
+						any_owned_pop_group = {
+							OR = {
+								is_pop_category = civilian
+								is_pop_category = maintenance_drone
+							}
+						}
+					}
+					root = {
+						owner = {
+							has_resource = {
+								type = energy
+								amount >= 100
+							}
+							has_resource = {
+								type = unity
+								amount >= 10
+							}
+						}
+					}
+				}
+				count = 500
+
+				random_owned_colony = {
+					limit = {
+						NOT = { is_same_value = root }
+						has_orbital_bombardment = no
+						has_ground_combat = no
+						any_owned_pop_group = {
+							OR = {
+								is_pop_category = civilian
+								is_pop_category = maintenance_drone
+							}
+						}
+					}
+					save_event_target_as = zz_br_src
+				}
+				zz_br_drain_src_planet_effect = yes
+			}
+		}
+
+		# outcome
+		if = {
+			limit = {
+				check_variable = {
+					which = zz_br_transferred
+					value = 0
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.22
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				root = {
+					owner = {
+						any_owned_colony = {
+							NOT = { is_same_value = root }
+							any_owned_pop_group = {
+								OR = {
+									is_pop_category = civilian
+									is_pop_category = maintenance_drone
+								}
+							}
+						}
+					}
+				}
+			}
+			owner = {
+				country_event = {
+					id = zz_br.23
+				}
+			}
+		}
+		else = {
+			owner = {
+				country_event = {
+					id = zz_br.21
+				}
+			}
+		}
+
+		clear_variable = zz_br_transferred
+	}
+}

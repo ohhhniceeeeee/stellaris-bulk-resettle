@@ -1,0 +1,163 @@
+##########################################################################
+# zz_bulk_resettle - three colony decisions
+#   补岗迁移 (fill jobs) / 超额迁移 (fill + drain approx-largest source)
+#   完全迁移 (move ALL civilians of every other colony here)
+# "Civilian pops" = pop categories flagged is_civilian_job: civilian + maintenance_drone.
+# Pure additive mod: no vanilla files overridden. Stellaris 4.4 (Pegasus).
+##########################################################################
+
+### 补岗迁移: fill open jobs with civilian pops from other colonies
+zz_br_fill_jobs_decision = {
+	owned_planets_only = yes
+	icon = decision_politics
+
+	potential = {
+		exists = owner
+	}
+
+	allow = {
+		custom_tooltip = {
+			fail_text = "zz_br_fail_no_jobs"
+			free_jobs > 0
+		}
+		custom_tooltip = {
+			fail_text = "zz_br_fail_policy"
+			OR = {
+				owner = {
+					has_policy_flag = resettlement_allowed
+				}
+				owner = {
+					is_gestalt = yes
+				}
+				owner = {
+					has_ascension_perk = ap_cosmogenesis
+				}
+			}
+		}
+		custom_tooltip = {
+			fail_text = "zz_br_fail_no_source"
+			owner = {
+				any_owned_colony = {
+					NOT = { is_same_value = root }
+					any_owned_pop_group = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+					}
+				}
+			}
+		}
+	}
+
+	effect = {
+		zz_br_do_fill_jobs = yes
+	}
+
+	ai_weight = {
+		weight = 0
+	}
+}
+
+### 超额迁移: fill jobs, then additionally drain all civilians of one source planet
+### (strong preference for the planet holding the most civilians)
+zz_br_excess_decision = {
+	owned_planets_only = yes
+	icon = decision_resources
+
+	potential = {
+		exists = owner
+	}
+
+	allow = {
+		custom_tooltip = {
+			fail_text = "zz_br_fail_no_jobs"
+			free_jobs > 0
+		}
+		custom_tooltip = {
+			fail_text = "zz_br_fail_policy"
+			OR = {
+				owner = {
+					has_policy_flag = resettlement_allowed
+				}
+				owner = {
+					is_gestalt = yes
+				}
+				owner = {
+					has_ascension_perk = ap_cosmogenesis
+				}
+			}
+		}
+		custom_tooltip = {
+			fail_text = "zz_br_fail_no_source"
+			owner = {
+				any_owned_colony = {
+					NOT = { is_same_value = root }
+					any_owned_pop_group = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+					}
+				}
+			}
+		}
+	}
+
+	effect = {
+		zz_br_do_excess = yes
+	}
+
+	ai_weight = {
+		weight = 0
+	}
+}
+
+### 完全迁移: move ALL civilian pops of every other colony here (no job/housing cap)
+zz_br_full_decision = {
+	owned_planets_only = yes
+	icon = decision_expel_population
+
+	potential = {
+		exists = owner
+	}
+
+	allow = {
+		custom_tooltip = {
+			fail_text = "zz_br_fail_policy"
+			OR = {
+				owner = {
+					has_policy_flag = resettlement_allowed
+				}
+				owner = {
+					is_gestalt = yes
+				}
+				owner = {
+					has_ascension_perk = ap_cosmogenesis
+				}
+			}
+		}
+		custom_tooltip = {
+			fail_text = "zz_br_fail_no_source"
+			owner = {
+				any_owned_colony = {
+					NOT = { is_same_value = root }
+					any_owned_pop_group = {
+						OR = {
+							is_pop_category = civilian
+							is_pop_category = maintenance_drone
+						}
+					}
+				}
+			}
+		}
+	}
+
+	effect = {
+		zz_br_do_full = yes
+	}
+
+	ai_weight = {
+		weight = 0
+	}
+}
