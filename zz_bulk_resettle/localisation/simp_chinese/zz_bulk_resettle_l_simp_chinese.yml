@@ -1,4 +1,4 @@
-l_simp_chinese:
+﻿l_simp_chinese:
  zz_br_fill_jobs_decision: "补岗迁移"
  zz_br_fill_jobs_decision_desc: "自动从帝国其它殖民地调集平民/维护子个体（居民类人口）迁入本星球填补空缺岗位，直到岗位补齐、源星球耗尽或资金不足为止。\n\n§E仅迁移居民类人口，失业人口与在岗人口不受影响。费用按原版标准从国库扣除（能量 100 + 凝聚力 10 / 人口）。§!"
  zz_br_excess_decision: "超额迁移"

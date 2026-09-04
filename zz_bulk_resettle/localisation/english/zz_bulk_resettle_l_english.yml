@@ -1,4 +1,4 @@
-l_english:
+﻿l_english:
  zz_br_fill_jobs_decision: "Fill Jobs (Bulk Resettle)"
  zz_br_fill_jobs_decision_desc: "Automatically moves civilian-type pops (Civilian / Maintenance Drone) from all other colonies to this planet to fill open jobs, until jobs are filled, no more sources exist, or funds run out.\n\n§EOnly civilian-type pops are moved; unemployed and employed pops are never touched. Costs are deducted at the vanilla rate (100 Energy + 10 Unity per pop).§!"
  zz_br_excess_decision: "Excess Resettle"
