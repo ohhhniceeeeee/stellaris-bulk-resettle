@@ -71,10 +71,6 @@ zz_br_excess_decision = {
 
 	allow = {
 		custom_tooltip = {
-			fail_text = "zz_br_fail_no_jobs"
-			free_jobs > 0
-		}
-		custom_tooltip = {
 			fail_text = "zz_br_fail_policy"
 			OR = {
 				owner = {

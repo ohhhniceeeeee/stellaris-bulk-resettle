@@ -1,8 +1,8 @@
-l_english:
+﻿l_english:
  zz_br_fill_jobs_decision: "Fill Jobs (Bulk Resettle)"
  zz_br_fill_jobs_decision_desc: "Automatically moves civilian-type pops (Civilian / Maintenance Drone) from all other colonies to this planet to fill open jobs, until jobs are filled, no more sources exist, or funds run out.\n\n§EOnly civilian-type pops are moved; unemployed and employed pops are never touched. Costs are deducted at the vanilla rate (100 Energy + 10 Unity per 100 pops).§!"
  zz_br_excess_decision: "Excess Resettle"
- zz_br_excess_decision_desc: "On top of Fill Jobs, additionally moves ALL civilians of one source planet that holds a large civilian population (approx. selection of the largest one via tiered weighted random; not a mathematical guarantee).\n\n§EVanilla-style costs are deducted as well.§!"
+ zz_br_excess_decision_desc: "Moves ALL civilians of one source planet that holds a large civilian population into this planet (approx. selection of the largest one via tiered weighted random; not a mathematical guarantee). If this planet has open jobs they are filled first (like Fill Jobs); if there are no open jobs, the civilians are moved directly.\n\n§EVanilla-style costs apply (100 Energy + 10 Unity per 100 pops).§!"
  zz_br_full_decision: "Complete Resettle"
  zz_br_full_decision_desc: "Moves ALL civilian-type pops of every other colony to this planet, without job or housing caps; stops early if the treasury can no longer pay.\n\n§EMay cause unemployment and overcrowding. Vanilla-style costs are deducted from the treasury.§!"
  zz_br_fail_no_jobs: "This planet has no open jobs."
@@ -17,7 +17,7 @@ l_english:
  zz_br_2_desc: "This planet still has open jobs, but no other colony has any moveable civilian-type pops left (or the source planets are bombarded / under ground combat)."
  zz_br_3_desc: "Your energy or unity stockpile is insufficient to pay the vanilla resettlement cost for the remaining pops, so the fill stopped early."
  zz_br_4_desc: "The fill stopped and this planet may still have open jobs. Check whether any other colony still has moveable civilian-type pops."
- zz_br_11_desc: "Jobs were filled and all civilians of the selected source planet were moved to this planet."
+ zz_br_11_desc: "Open jobs (if any) were filled first, and all civilians of the selected source planet were moved to this planet."
  zz_br_12_desc: "Jobs were filled (or best effort done), but no other colony had extra civilian-type pops to move."
  zz_br_13_desc: "Your energy or unity stockpile was insufficient to pay for the remaining moves, so the excess resettle stopped early."
  zz_br_21_desc: "All moveable civilian-type pops of every other colony were moved to this planet."
