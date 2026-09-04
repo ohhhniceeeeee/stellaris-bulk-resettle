@@ -3,6 +3,8 @@
 适用于 **Stellaris 4.4 (Pegasus)** 的纯增量 mod：通过**星球决策**批量迁移“居民类人口”到当前星球。
 Enables three colony decisions that bulk-migrate *civilian-type* pops (Civilian / Maintenance Drone) between your colonies — no vanilla file is overridden.
 
+**Steam 创意工坊（发布条目）**：https://steamcommunity.com/sharedfiles/filedetails/?id=3795384348 —— 发布状态：私有（Private），可在条目页随时改为公开。
+
 > 背景：原版“强制迁移”窗口一次点击只迁移 100 人口且无批量手段；而“按修饰键（Ctrl/Alt）点击”与“动态列表/排序取最大”在官方脚本层不受支持，故本 mod 采用「决策 + 全自动脚本」形态实现同等目的。
 
 ---
@@ -60,6 +62,14 @@ zz_bulk_resettle/
 全部为**新增文件**，不覆盖任何原版内容，与多数 mod（含 UI mod）天然兼容。
 
 ## 6. 安装
+
+**方式一：创意工坊订阅（推荐，一键启用）**
+
+1. 打开条目页 https://steamcommunity.com/sharedfiles/filedetails/?id=3795384348 → 点「订阅」；
+2. Steam 自动下载，Paradox Launcher 的模组列表会自动出现该条目，勾选启用即可；
+3. 注意：订阅版与本仓库的本地副本**不要同时启用**，二者会重复提供同 ID 的决议。
+
+**方式二：本地手动安装**
 
 1. 把 `zz_bulk_resettle` 文件夹复制到 `文档\Paradox Interactive\Stellaris\mod\zz_bulk_resettle\`；
 2. 在上层 `mod\` 目录新建文本文件 `zz_bulk_resettle.mod`：
