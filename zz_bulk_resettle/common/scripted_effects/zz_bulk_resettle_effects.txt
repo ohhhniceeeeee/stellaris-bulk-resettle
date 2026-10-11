@@ -12,10 +12,8 @@
 # (Cost-multiplier modifiers such as edicts/authorities are not applied.)
 #
 # Notes:
-#  - The engine offers no sort/"pick the largest" primitive, so the
-#    "planet with the most civilians" step of 超额迁移 uses tiered weighted
-#    random selection (strong preference for the largest planet, not a
-#    mathematical guarantee). Tiers are marked below.
+#  - 超额迁移 uses ordered_owned_colony with a numeric scripted trigger to
+#    select the source colony containing the most civilian-type pops.
 ##########################################################################
 
 # ============================================================
@@ -28,7 +26,7 @@ zz_br_fill_jobs_phase_effect = {
 		limit = {
 			check_variable = {
 				which = zz_br_need
-				value > 0
+				value >= 100
 			}
 			root = {
 				owner = {
@@ -328,6 +326,7 @@ zz_br_do_fill_jobs = {
 			}
 			zz_br_fill_jobs_phase_effect = yes
 		}
+
 		else = {
 			owner = {
 				country_event = {
@@ -336,13 +335,14 @@ zz_br_do_fill_jobs = {
 			}
 		}
 
+		# Pop transfers do not always trigger an immediate job evaluation.
+		# Refresh employment before deciding whether every vacancy was filled.
+		check_planet_employment = yes
+
 		# outcome
 		if = {
 			limit = {
-				check_variable = {
-					which = zz_br_need
-					value <= 0
-				}
+				free_jobs <= 0
 			}
 			owner = {
 				country_event = {
@@ -411,8 +411,8 @@ zz_br_do_fill_jobs = {
 }
 
 # ============================================================
-# Decision effect: 超额迁移 = 补岗迁移 + drain all civilians of one
-# source planet (strong weighted preference for the largest one).
+# Decision effect: 超额迁移 = 补岗迁移 + drain all civilians of the
+# source colony with the most civilian-type pops.
 # ============================================================
 zz_br_do_excess = {
 	hidden_effect = {
@@ -435,9 +435,11 @@ zz_br_do_excess = {
 			}
 			zz_br_fill_jobs_phase_effect = yes
 		}
+		check_planet_employment = yes
 
-		# 2) extra: pick one source planet with strong preference for the
-		#    planet holding the most civilians, then move ALL its civilians.
+		# 2) extra: pick the source colony with the most civilian-type pops,
+		#    then move ALL of its civilians. ordered_owned_colony is supported
+		#    by the 4.4 engine; weighted_random_owned_colony is not.
 		if = {
 			limit = {
 				root = {
@@ -457,7 +459,7 @@ zz_br_do_excess = {
 				}
 			}
 			owner = {
-				weighted_random_owned_colony = {
+				ordered_owned_colony = {
 					limit = {
 						NOT = { is_same_value = root }
 						has_orbital_bombardment = no
@@ -469,58 +471,8 @@ zz_br_do_excess = {
 							}
 						}
 					}
-					weights = {
-						base = 1
-						# tiered preference for larger civilian populations
-						modifier = {
-							factor = 2
-							count_owned_pop_amount = {
-								limit = {
-									OR = {
-										is_pop_category = civilian
-										is_pop_category = maintenance_drone
-									}
-								}
-								count > 100
-							}
-						}
-						modifier = {
-							factor = 3
-							count_owned_pop_amount = {
-								limit = {
-									OR = {
-										is_pop_category = civilian
-										is_pop_category = maintenance_drone
-									}
-								}
-								count > 500
-							}
-						}
-						modifier = {
-							factor = 4
-							count_owned_pop_amount = {
-								limit = {
-									OR = {
-										is_pop_category = civilian
-										is_pop_category = maintenance_drone
-									}
-								}
-								count > 2000
-							}
-						}
-						modifier = {
-							factor = 5
-							count_owned_pop_amount = {
-								limit = {
-									OR = {
-										is_pop_category = civilian
-										is_pop_category = maintenance_drone
-									}
-								}
-								count > 8000
-							}
-						}
-					}
+					position = 0
+					order_by = trigger:zz_br_civilian_pop_amount
 					save_event_target_as = zz_br_src
 				}
 			}

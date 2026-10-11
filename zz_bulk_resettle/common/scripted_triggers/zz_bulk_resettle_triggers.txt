@@ -1,0 +1,15 @@
+##########################################################################
+# Numeric trigger used by ordered_owned_colony to select the source colony
+# with the most movable civilian / maintenance drone pops.
+##########################################################################
+
+zz_br_civilian_pop_amount = {
+	count_owned_pop_amount = {
+		limit = {
+			OR = {
+				is_pop_category = civilian
+				is_pop_category = maintenance_drone
+			}
+		}
+	}
+}
