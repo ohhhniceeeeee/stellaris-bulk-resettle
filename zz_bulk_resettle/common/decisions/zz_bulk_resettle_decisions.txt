@@ -3,7 +3,7 @@
 #   补岗迁移 (fill jobs) / 超额迁移 (fill + drain largest source)
 #   完全迁移 (move ALL civilians of every other colony here)
 # "Civilian pops" = pop categories flagged is_civilian_job: civilian + maintenance_drone.
-# Pure additive mod: no vanilla files overridden. Stellaris 4.4 (Pegasus).
+# Pure additive mod: no vanilla files overridden. Stellaris 4.5 (Cygnus).
 ##########################################################################
 
 ### 补岗迁移: fill open jobs with civilian pops from other colonies

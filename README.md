@@ -1,6 +1,6 @@
 # zz_bulk_resettle — Stellaris 批量迁移（补岗 / 超额 / 完全）
 
-适用于 **Stellaris 4.4 (Pegasus)** 的批量迁移 QoL mod：在目标星球的「决策」栏一键完成三个不同力度的“强制迁移”，告别原版迁移窗口一次点击只搬 100 人口的重复操作。
+适用于 **Stellaris 4.5 (Cygnus)** 的批量迁移 QoL mod：在目标星球的「决策」栏一键完成三个不同力度的“强制迁移”，告别原版迁移窗口一次点击只搬 100 人口的重复操作。
 Enables three colony decisions that bulk-migrate *civilian-type* pops (Civilian / Maintenance Drone) between your colonies.
 
 **Steam 创意工坊**：https://steamcommunity.com/sharedfiles/filedetails/?id=3795384348
@@ -38,7 +38,7 @@ Enables three colony decisions that bulk-migrate *civilian-type* pops (Civilian 
 
 ## 兼容性与说明
 
-- 仅适用于 **4.4.\***（Pegasus）；纯新增文件，不覆盖任何原版内容，与绝大多数模组（含 UI mod）兼容。
+- 适用于 **4.5.\***（Cygnus）；纯新增文件，不覆盖任何原版内容，与绝大多数模组（含 UI mod）兼容。
 - 简体中文 / English 界面均可用。
 - 「超额迁移」会准确选择可迁移的平民/维护子个体数量最多的来源星球；数量相同的星球按引擎顺序选择。
 - 正被轨道轰炸或发生地面战斗的星球不会作为迁移来源。
@@ -51,4 +51,4 @@ Enables three colony decisions that bulk-migrate *civilian-type* pops (Civilian 
 
 ---
 
-*Made for fun. 群星 4.4 批量迁移 QoL。*
+*Made for fun. 群星 4.5 批量迁移 QoL。*
