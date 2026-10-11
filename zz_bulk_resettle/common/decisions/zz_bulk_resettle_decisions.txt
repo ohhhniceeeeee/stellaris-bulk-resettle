@@ -10,9 +10,6 @@
 zz_br_fill_jobs_decision = {
 	owned_planets_only = yes
 	icon = decision_politics
-	resources = {
-		category = decisions
-	}
 
 	potential = {
 		exists = owner
@@ -67,9 +64,6 @@ zz_br_fill_jobs_decision = {
 zz_br_excess_decision = {
 	owned_planets_only = yes
 	icon = decision_resources
-	resources = {
-		category = decisions
-	}
 
 	potential = {
 		exists = owner
@@ -119,9 +113,6 @@ zz_br_excess_decision = {
 zz_br_full_decision = {
 	owned_planets_only = yes
 	icon = decision_expel_population
-	resources = {
-		category = decisions
-	}
 
 	potential = {
 		exists = owner
